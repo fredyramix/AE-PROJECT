@@ -1,0 +1,10 @@
+El mejor hasta ahora:
+Generacion: 0
+Vector: [5.685375379784875, 1.5123393420820679]
+Aptitud: 384.489742268
+Tiempo: 0.113628149033 segundos
+El mejor hasta ahora:
+Generacion: 0
+Vector: [8.134564598247145, 1.1784728846323012e-09]
+Aptitud: 9.90685991602
+Tiempo: 0.220215082169 segundos
