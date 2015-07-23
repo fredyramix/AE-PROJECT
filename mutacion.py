@@ -10,7 +10,7 @@ def mutar(cruzados):
     #print "posicion individuo: "+str(y)
     #print "el que se va a mutar: "+str(muta[y])
     #print "Tamano Individuo: "+str(tam)
-    mut = random.uniform(0.000000001,0.000000002)
+    mut = random.uniform(0.000000001,1)
     #print "Nuevo numero:" +str(mut)
     #print cruzados[x][y]
 

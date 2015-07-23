@@ -7,10 +7,11 @@ from graficadora import *
 from seleccionamejor import elitismo
 from mutacion import mutar
 from salida import escribir
+from seleccion import seleccionar,seleccionarMejores
 TAM_POBLACION=10
 import time
 
-m=1 #numero de variables.
+#m=3 #numero de variables.
 TAM_INDIVIDUO=2
 
 def crearPoblacion(tam_indi,tam_pob):
@@ -21,7 +22,6 @@ def crearPoblacion(tam_indi,tam_pob):
             #individuo.append(random.uniform(0.000000001,0.000000002))
             individuo.append(random.uniform(1,10))
         poblacion.append(individuo)
-    print poblacion
     return poblacion
 
 
@@ -67,11 +67,14 @@ def main(start_time):
     n = len(muestras)
     #print "numero de muestras: " +str(n)
     '''Los datos estan compuestos por Tiempo,latitud,longitud,magnitud '''
-    poblacion=crearPoblacion(TAM_INDIVIDUO,TAM_POBLACION)
+    padres=crearPoblacion(TAM_INDIVIDUO,TAM_POBLACION)
     #una vez creado los valores de Teta aleatorios sigue evaluar.
-    aptitud=calcularAptitud(poblacion,n,muestras)
+    aptitud_padres=calcularAptitud(padres,n,muestras)
     #nos devuelve una lista de aptitudes.
-    mejor,bandera = elitismo(poblacion,aptitud,mejor)
+    mejor,bandera = elitismo(padres,aptitud_padres,mejor)
+
+    selecionados=seleccionar(padres,aptitud_padres)
+
     a="El mejor hasta ahora:"
     escribir(outfile,a)
     a= "Generacion: " +str(g)
@@ -84,15 +87,28 @@ def main(start_time):
     escribir(outfile,a)
     #x,y=generarPuntosMejor(mejor,muestras)
     #graficar(x,y)
+
     '''Proceso de cruza'''
+    hijos=cruzar(selecionados)
+    aptitud_hijos=calcularAptitud(hijos,n,muestras)
+    '''Seleccionar mejores entre padres e hijos'''
+    mejores=seleccionarMejores(padres,hijos,aptitud_padres,aptitud_hijos)
+    mutados = mutar(mejores)
+    aptitud_padres=calcularAptitud(mutados,n,muestras)
+
+    mejor,bandera = elitismo(mutados,aptitud_padres,mejor)
+    padres=mutados[:]
+    g=1
     while True:
-        cruzados=cruzar(poblacion)
-        '''Proceso de Mutacion'''
-        mutados=mutar(cruzados)
-        #print mutados
-        aptitud_hijos=calcularAptitud(mutados,n,muestras)
-        mejor,bandera = elitismo(mutados,aptitud_hijos,mejor)
-        poblacion=mutados[:]
+        selecionados=seleccionar(padres,aptitud_padres)
+        hijos=cruzar(selecionados)
+        aptitud_hijos=calcularAptitud(hijos,n,muestras)
+        '''Seleccionar mejores entre padres e hijos'''
+        mejores=seleccionarMejores(padres,hijos,aptitud_padres,aptitud_hijos)
+        mutados = mutar(mejores)
+        aptitud_padres=calcularAptitud(mutados,n,muestras)
+        mejor,bandera = elitismo(mutados,aptitud_padres,mejor)
+        padres=mutados[:]
         #print aptitud
         if bandera==True:
             a="El mejor hasta ahora:"
